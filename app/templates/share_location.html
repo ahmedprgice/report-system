@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Security Management System</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+    <h1>Welcome to Campus Security Location Sharing</h1>
+    <div id="location-message"></div>
+    <button id="stop-sharing" style="display:none;">Stop Sharing Location</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const locationMessage = document.getElementById('location-message');
+            const stopSharingButton = document.getElementById('stop-sharing');
+            let locationInterval;
+
+            function sendLocationToBackend(latitude, longitude) {
+                const url = "{% url 'share_location' visitor.id %}";
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        locationMessage.textContent = "Location shared successfully.";
+                        stopSharingButton.style.display = "block";
+                    } else {
+                        locationMessage.textContent = "Failed to share location.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error sharing location:", error);
+                    locationMessage.textContent = "Error sharing location.";
+                });
+            }
+
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        sendLocationToBackend(position.coords.latitude, position.coords.longitude);
+                        locationInterval = setInterval(() => {
+                            navigator.geolocation.getCurrentPosition(function (position) {
+                                sendLocationToBackend(position.coords.latitude, position.coords.longitude);
+                            });
+                        }, 60000); // Send location every 60 seconds
+                    }, function (error) {
+                        locationMessage.textContent = "Unable to retrieve your location.";
+                    });
+                } else {
+                    locationMessage.textContent = "Geolocation is not supported by this browser.";
+                }
+            }
+
+            stopSharingButton.addEventListener('click', function () {
+                clearInterval(locationInterval);
+                locationMessage.textContent = "Location sharing stopped.";
+                removeLocationFromBackend();
+                stopSharingButton.style.display = "none";
+            });
+
+            // Prompt user for location sharing as soon as the page loads
+            getLocation();
+        });
+
+        function removeLocationFromBackend() {
+            const url = "{% url 'share_location' visitor.id %}";
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Location removed successfully.");
+                } else {
+                    console.error("Failed to remove location.");
+                }
+            })
+            .catch(error => {
+                console.error("Error removing location:", error);
+            });
+        }
+    </script>
+</body>
+</html>

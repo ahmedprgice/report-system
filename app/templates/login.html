@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <!-- Header Section -->
+    <header class="header">
+        <h1>Welcome to Campus Security Management System</h1>
+        <p class="subtext">Please log in to continue to user Dashboard.</p>
+    </header>
+
+    <!-- Login Form Section -->
+    <section class="login-form">
+        <form action="{% url 'login' %}" method="post" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="userid">User ID:</label>
+                <input type="text" id="userid" name="userid" required>
+                <span class="error-message" id="userid-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <span class="error-message" id="password-error"></span>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+    </section>
+</div>
+
+<!-- JavaScript for Form Validation -->
+<script>
+    function validateForm() {
+        var userid = document.getElementById("userid").value;
+        var password = document.getElementById("password").value;
+        var isValid = true;
+
+        // Reset previous error messages
+        document.getElementById("userid-error").innerText = "";
+        document.getElementById("password-error").innerText = "";
+
+        // Validate User ID
+        if (userid.trim() === '') {
+            document.getElementById("userid-error").innerText = "Please enter a valid User ID.";
+            isValid = false;
+        }
+
+        // Validate Password
+        if (password.trim() === '') {
+            document.getElementById("password-error").innerText = "Please enter a valid Password.";
+            isValid = false;
+        }
+
+        return isValid;
+    }
+</script>
+
+</body>
+</html>

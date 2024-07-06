@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Dashboard</title>
+    {% load static %} <!-- Load static tag library -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> <!-- Reference your CSS file using static tag -->
+    <style>
+        .accordion {
+            background-color: #f1f1f1;
+            color: #333;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            transition: background-color 0.4s;
+        }
+
+        .accordion:hover {
+            background-color: #ddd;
+        }
+
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            display: none;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .logout-container .logout-button {
+            background-color: #007BFF;
+            /* Blue color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            /* Full width */
+            max-width: 200px;
+            /* Maximum width */
+            text-align: center;
+            /* Center text */
+        }
+
+        .logout-container .logout-button:hover {
+            background-color: #0056b3;
+            /* Darker blue on hover */
+        }
+
+        .dashboard-section {
+            margin-bottom: 20px;
+        }
+
+        .report-success {
+            margin-top: 10px;
+            background-color: #d4edda;
+            /* Green background color */
+            color: #155724;
+            /* Dark green text color */
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        /* Additional styles for form elements */
+        .report-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .report-form input[type="text"],
+        .report-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .report-form button {
+            background-color: #007BFF;
+            /* Blue color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .report-form button:hover {
+            background-color: #0056b3;
+            /* Darker blue on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to Visitor Dashboard</h1>
+        <div class="content">
+            <!-- Report Section -->
+             <!-- Report Section -->
+             <button class="accordion">Report</button>
+            <div class="panel">
+                <section class="dashboard-section">
+                    <form class="report-form" id="report-form" onsubmit="return submitReport(event)">
+                        <div>
+                            <label for="report-title">Title:</label>
+                            <input type="text" id="report-title" name="title" required>
+                        </div>
+                        <div>
+                            <label for="report-content">Content:</label>
+                            <textarea id="report-content" name="content" rows="4" required></textarea>
+                        </div>
+                        <input type="hidden" id="visitor-name" name="visitor-name" value="{{ visitor_name }}" required>
+                        <button type="submit" class="submit-button">Submit</button>
+                    </form>
+                    <div class="report-success" id="report-success-message" style="display:none;">
+                        Report submitted successfully!
+                    </div>
+                    <div class="report-error" id="report-error-message" style="display:none;">
+                        Failed to submit the report. Please try again.
+                    </div>
+                </section>
+            </div>
+
+            <!-- Contact Security Section -->
+            <button class="accordion">Contact Security</button>
+            <div class="panel">
+                <section class="dashboard-section">
+                    <p>Contact our security team here:</p>
+                    <p>Phone: +603 8312 5803</p>
+                    <p>Location: Security Building, Multimedia University, Persiaran Multimedia, 63100 Cyberjaya</p>
+                </section>
+            </div>
+
+            <!-- QR Code Section -->
+            <button class="accordion">QR Code</button>
+            <div class="panel">
+                <section class="dashboard-section">
+                    <p>Scan the QR code to share your Location</p>
+                    {% if qr_code_url %}
+                    <img src="{{ qr_code_url }}" alt="QR Code">
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to toggle the accordion panels
+        document.addEventListener("DOMContentLoaded", function () {
+            var accordions = document.querySelectorAll(".accordion");
+
+            accordions.forEach(function (accordion) {
+                accordion.addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    var panel = this.nextElementSibling;
+                    if (panel.style.display === "block") {
+                        panel.style.display = "none";
+                    } else {
+                        panel.style.display = "block";
+                    }
+                });
+            });
+        });
+
+        // Function to handle report submission
+        function submitReport(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('report-form');
+            const formData = new FormData(form);
+            const csrfToken = '{{ csrf_token }}'; // Make sure to pass CSRF token if using Django's CSRF protection
+
+            fetch('./create_report/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('report-success-message').style.display = 'block';
+                    document.getElementById('report-error-message').style.display = 'none';
+                    form.reset();
+                } else {
+                    document.getElementById('report-error-message').innerText = data.message;
+                    document.getElementById('report-error-message').style.display = 'block';
+                    document.getElementById('report-success-message').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                document.getElementById('report-error-message').innerText = 'Failed to submit the report. Please try again.';
+                document.getElementById('report-error-message').style.display = 'block';
+                document.getElementById('report-success-message').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

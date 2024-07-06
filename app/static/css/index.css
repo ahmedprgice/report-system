@@ -1,0 +1,113 @@
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #E0F7FA;
+}
+
+/* Container Styling */
+.container {
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header Styling */
+.header {
+  background-color: #1E88E5;
+  color: #fff;
+  text-align: center;
+  padding: 50px 0; /* Increased padding for larger box */
+  margin-bottom: 0 px; /* Added margin bottom for spacing */
+}
+
+.header h1 {
+  margin-bottom: 10px;
+  font-size: 36px; /* Increased font size for larger heading */
+}
+
+.subtext {
+  margin-bottom: 20px;
+  font-size: 18px; /* Increased font size for larger subtext */
+}
+
+/* Navigation Buttons Styling */
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.nav-buttons form {
+  margin-right: 50px;
+}
+
+.nav-buttons button {
+  background-color:black;
+  color: #fff;
+  border: none;
+  padding: 20px 50px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nav-buttons button:hover {
+  background-color: #555;
+}
+
+/* Main Content Styling */
+.main-content {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.main-content img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* Feature Box Styling */
+.feature-box {
+  display: flex;
+  justify-content: space-around;
+}
+
+.feature {
+  width: 30%;
+  background-color: #1E88E5;
+  color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.feature h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.feature p {
+  font-size: 16px;
+}
+
+/* Footer Styling */
+.footer {
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.footer-bottom {
+  margin-top: 20px;
+}

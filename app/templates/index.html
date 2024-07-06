@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Security Management System</title>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header Section -->
+    <header class="header">
+      <h1>Welcome to Campus Security Management System</h1>
+      <p class="subtext">Explore our comprehensive security solutions tailored for our campus.</p>
+      <div class="nav-buttons">
+        <form action="{% url 'login' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">LOGIN</button>
+        </form>
+        <form action="{% url 'visitor' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">VISITOR</button>
+        </form>
+        <form action="{% url 'security_login' %}" method="get">
+          <button type="submit">SECURITY</button>
+        </form>
+      </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <section class="main-content">
+      <img src="{% static 'img/OIP.jpg' %}" alt="Main Image">
+      <div class="feature-box">
+        <div class="feature">
+          <h3>Real-time Monitoring</h3>
+          <p>Monitor campus activities in real-time to ensure safety.</p>
+        </div>
+        <div class="feature">
+          <h3>Visitor Management</h3>
+          <p>Efficiently manage and track visitors on campus.</p>
+        </div>
+        <div class="feature">
+          <h3>Emergency Response</h3>
+          <p>Rapid response systems for emergencies and incidents.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>&copy; 2024 Campus Security Management System. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
